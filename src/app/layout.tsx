@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Noto_Sans } from "next/font/google";
+import { Lato } from "next/font/google";
 import "./globals.css";
 import "./prosemirror.css";
 
-const notoSans = Noto_Sans({
-  variable: "--font-noto-sans",
+const lato = Lato({
+  variable: "--font-lato",
   subsets: ["latin"],
+  weight: ["100", "300", "400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -20,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${notoSans.variable} antialiased`}>{children}</body>
+      <body className={`${lato.variable} antialiased`}>{children}</body>
     </html>
   );
 }
