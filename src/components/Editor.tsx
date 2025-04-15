@@ -6,18 +6,8 @@ import { defaultExtensions } from "@/lib/extensions";
 
 const extensions = [...defaultExtensions];
 
-const defaultContent = {
-  type: "doc",
-  content: [
-    {
-      type: "paragraph",
-      content: [{ type: "text", text: "What's on your mind?" }],
-    },
-  ],
-};
-
 const Editor = () => {
-  const [content, setContent] = useState<JSONContent | null>(defaultContent);
+  const [content, setContent] = useState<JSONContent | null>(null);
 
   return (
     <div className="h-full">
