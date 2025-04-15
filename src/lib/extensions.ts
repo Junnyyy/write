@@ -13,6 +13,8 @@ import { cx } from "class-variance-authority";
 
 const placeholder = Placeholder.configure({
   placeholder: "What's on your mind?",
+  emptyEditorClass: "is-editor-empty",
+  emptyNodeClass: "is-editor-empty",
 });
 
 const tiptapLink = TiptapLink.configure({
