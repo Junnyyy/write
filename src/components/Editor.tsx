@@ -31,6 +31,12 @@ const Editor = () => {
             console.log("Editor", json);
             setContent(json);
           }}
+          editorProps={{
+            attributes: {
+              class:
+                "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto border-none font-[family-name:var(--font-noto-sans)]",
+            },
+          }}
         />
       </EditorRoot>
     </div>
