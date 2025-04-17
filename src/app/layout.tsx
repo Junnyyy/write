@@ -3,6 +3,7 @@ import { Lato } from "next/font/google";
 import "./globals.css";
 import "./prosemirror.css";
 import CommandMenu from "@/components/CommandMenu";
+import TipText from "@/components/TipText";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${lato.variable} antialiased`}>
         <CommandMenu />
+        <TipText />
         {children}
       </body>
     </html>
