@@ -21,6 +21,7 @@
     "dexie": "^4.0.11",
     "dexie-react-hooks": "^1.1.7",
     "lucide-react": "^0.488.0",
+    "nanoid": "^5.1.5",
     "next": "15.3.0",
     "novel": "^1.0.2",
     "react": "^19.0.0",
