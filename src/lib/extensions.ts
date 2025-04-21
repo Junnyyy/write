@@ -1,5 +1,4 @@
 import {
-  TiptapImage,
   TiptapLink,
   UpdatedImage,
   TaskList,
@@ -87,7 +86,6 @@ export const defaultExtensions = [
   starterKit,
   placeholder,
   tiptapLink,
-  TiptapImage,
   UpdatedImage,
   taskList,
   taskItem,
