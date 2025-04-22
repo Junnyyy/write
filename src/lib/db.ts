@@ -17,8 +17,16 @@ db.version(1).stores({
   documents: "id, content, updatedAt",
 });
 
-const saveDocument = async (document: Document) => {
-  await db.documents.put(document);
+const saveDocument = async (
+  id: string,
+  content: JSONContent,
+  updatedAt: number
+) => {
+  await db.documents.put({
+    id,
+    content,
+    updatedAt,
+  });
 };
 
 const getDocument = async (id: string) => {
