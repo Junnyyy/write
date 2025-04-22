@@ -1,13 +1,33 @@
 "use client";
 
 import { EditorContent, EditorRoot, JSONContent } from "novel";
-import { useState } from "react";
+import { useCallback } from "react";
 import { defaultExtensions } from "@/lib/extensions";
+import { useEditorStore } from "@/store/useEditorStore";
+import { nanoid } from "nanoid";
 
 const extensions = [...defaultExtensions];
 
+const MIN_WORDS = 5;
+
 const Editor = () => {
-  const [content, setContent] = useState<JSONContent | null>(null);
+  const { documentId, setDocumentId } = useEditorStore();
+
+  const handleUpdate = useCallback(
+    (json: JSONContent, text: string) => {
+      const wordCount = text.split(" ").length;
+      if (!documentId && wordCount > MIN_WORDS) {
+        const newDocumentId = nanoid();
+        setDocumentId(newDocumentId);
+        console.log("Creating new document", newDocumentId);
+      }
+
+      if (documentId && wordCount > MIN_WORDS) {
+        console.log("Saving document", documentId);
+      }
+    },
+    [documentId, setDocumentId]
+  );
 
   return (
     <div className="h-full">
@@ -15,11 +35,10 @@ const Editor = () => {
         <EditorContent
           className="h-full"
           extensions={extensions}
-          initialContent={content || undefined}
           onUpdate={({ editor }) => {
             const json = editor.getJSON();
-            console.log("Editor", json);
-            setContent(json);
+            const text = editor.getText();
+            handleUpdate(json, text);
           }}
           editorProps={{
             attributes: {
