@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { defaultExtensions } from "@/lib/extensions";
 import { useEditorStore } from "@/store/useEditorStore";
 import { nanoid } from "nanoid";
+import debounce from "lodash.debounce";
 
 const extensions = [...defaultExtensions];
 
@@ -13,20 +14,32 @@ const MIN_WORDS = 5;
 const Editor = () => {
   const { documentId, setDocumentId } = useEditorStore();
 
+  const debouncedSave = useCallback(
+    debounce((json: JSONContent) => {
+      if (!documentId) {
+        // console.log("no document id");
+        return;
+      }
+
+      // console.log("saved document");
+    }, 1000),
+    [documentId]
+  );
+
   const handleUpdate = useCallback(
     (json: JSONContent, text: string) => {
       const wordCount = text.split(" ").length;
+
       if (!documentId && wordCount > MIN_WORDS) {
         const newDocumentId = nanoid();
         setDocumentId(newDocumentId);
-        console.log("Creating new document", newDocumentId);
       }
 
       if (documentId && wordCount > MIN_WORDS) {
-        console.log("Saving document", documentId);
+        debouncedSave(json);
       }
     },
-    [documentId, setDocumentId]
+    [documentId, setDocumentId, debouncedSave]
   );
 
   return (
