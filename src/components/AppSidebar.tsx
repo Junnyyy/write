@@ -3,10 +3,8 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
@@ -16,10 +14,13 @@ import {
 import { getDocumentTitles } from "@/lib/db";
 import { useState, useEffect } from "react";
 import { MoreHorizontal } from "lucide-react";
+import { useEditorStore } from "@/store/useEditorStore";
+
 export function AppSidebar() {
   const [documents, setDocuments] = useState<{ id: string; title: string }[]>(
     []
   );
+  const { lastSaved } = useEditorStore();
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -27,7 +28,7 @@ export function AppSidebar() {
       setDocuments(documents);
     };
     fetchDocuments();
-  }, []);
+  }, [lastSaved]);
 
   return (
     <Sidebar>
