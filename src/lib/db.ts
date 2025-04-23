@@ -49,7 +49,12 @@ const getDocumentTitles = async () => {
     .orderBy("updatedAt")
     .reverse()
     .toArray()
-    .then((documents) => documents.map(({ id, title }) => ({ id, title })));
+    .then((documents) =>
+      documents.map(({ id, title }) => ({
+        id,
+        title: title === "" ? "Untitled" : title,
+      }))
+    );
 };
 
 export type { Document };
