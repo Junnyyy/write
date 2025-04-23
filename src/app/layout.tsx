@@ -4,6 +4,7 @@ import "./globals.css";
 import "./prosemirror.css";
 import CommandMenu from "@/components/CommandMenu";
 import TipText from "@/components/TipText";
+import { NotificationProvider } from "@/components/NotificationProvider";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -24,9 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${lato.variable} antialiased`}>
-        <CommandMenu />
-        <TipText />
-        {children}
+        <NotificationProvider>
+          <CommandMenu />
+          <TipText />
+          {children}
+        </NotificationProvider>
       </body>
     </html>
   );
