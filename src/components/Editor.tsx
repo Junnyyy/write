@@ -1,11 +1,12 @@
 "use client";
 
 import { EditorContent, EditorRoot, JSONContent } from "novel";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { defaultExtensions } from "@/lib/extensions";
 import { useEditorStore } from "@/store/useEditorStore";
 import { nanoid } from "nanoid";
 import debounce from "lodash.debounce";
+import { getDocument, saveDocument } from "@/lib/db";
 
 const extensions = [...defaultExtensions];
 
@@ -17,11 +18,12 @@ const Editor = () => {
   const debouncedSave = useCallback(
     debounce((json: JSONContent) => {
       if (!documentId) {
-        // console.log("no document id");
+        console.log("no document id");
         return;
       }
 
-      // console.log("saved document");
+      saveDocument(documentId, json, Date.now());
+      console.log("saved document");
     }, 1000),
     [documentId]
   );
