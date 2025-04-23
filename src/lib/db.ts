@@ -44,5 +44,20 @@ const getAllDocuments = async () => {
   return await db.documents.orderBy("updatedAt").reverse().toArray();
 };
 
+const getDocumentTitles = async () => {
+  return await db.documents
+    .orderBy("updatedAt")
+    .reverse()
+    .toArray()
+    .then((documents) => documents.map(({ id, title }) => ({ id, title })));
+};
+
 export type { Document };
-export { db, saveDocument, getDocument, deleteDocument, getAllDocuments };
+export {
+  db,
+  saveDocument,
+  getDocument,
+  deleteDocument,
+  getAllDocuments,
+  getDocumentTitles,
+};
