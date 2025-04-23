@@ -55,6 +55,12 @@ const Editor = () => {
     [documentId, showNotification, setLastSaved]
   );
 
+  useEffect(() => {
+    return () => {
+      debouncedSave.cancel();
+    };
+  }, [debouncedSave]);
+
   const handleUpdate = useCallback(
     (json: JSONContent, text: string) => {
       const words = text.split(" ").filter((word) => word.length > 0);
