@@ -43,12 +43,12 @@ const Editor = () => {
   }, [documentId]);
 
   const debouncedSave = useCallback(
-    debounce((json: JSONContent) => {
+    debounce((json: JSONContent, title: string) => {
       if (!documentId) {
         return;
       }
 
-      saveDocument(documentId, json, Date.now());
+      saveDocument(documentId, title, json, Date.now());
       showNotification({ message: "Saved just now" });
     }, DEBOUNCE_TIME),
     [documentId, showNotification]
@@ -56,15 +56,22 @@ const Editor = () => {
 
   const handleUpdate = useCallback(
     (json: JSONContent, text: string) => {
-      const wordCount = text.split(" ").length;
+      const words = text.split(" ").filter((word) => word.length > 0);
+      const wordCount = words.length;
 
       if (!documentId && wordCount > MIN_WORDS) {
         const newDocumentId = nanoid();
         setDocumentId(newDocumentId);
       }
 
-      if (documentId && wordCount > MIN_WORDS) {
-        debouncedSave(json);
+      if (documentId) {
+        if (wordCount < 1) {
+          debouncedSave(json, "");
+          return;
+        }
+
+        const title = words.slice(0, 5).join(" ");
+        debouncedSave(json, title);
       }
     },
     [documentId, setDocumentId, debouncedSave]

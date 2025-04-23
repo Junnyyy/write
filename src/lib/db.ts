@@ -3,6 +3,7 @@ import type { JSONContent } from "novel";
 
 interface Document {
   id: string;
+  title: string;
   content: JSONContent;
   updatedAt: number;
 }
@@ -19,11 +20,13 @@ db.version(1).stores({
 
 const saveDocument = async (
   id: string,
+  title: string,
   content: JSONContent,
   updatedAt: number
 ) => {
   await db.documents.put({
     id,
+    title,
     content,
     updatedAt,
   });
