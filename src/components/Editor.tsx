@@ -7,6 +7,7 @@ import { useEditorStore } from "@/store/useEditorStore";
 import { nanoid } from "nanoid";
 import debounce from "lodash.debounce";
 import { getDocument, saveDocument } from "@/lib/db";
+import { useNotificationContext } from "@/components/NotificationProvider";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -17,6 +18,7 @@ const DEBOUNCE_TIME = 1000;
 
 const Editor = () => {
   const { documentId, setDocumentId } = useEditorStore();
+  const { showNotification } = useNotificationContext();
   const [initialContent, setInitialContent] = useState<JSONContent | undefined>(
     undefined
   );
@@ -47,8 +49,9 @@ const Editor = () => {
       }
 
       saveDocument(documentId, json, Date.now());
+      showNotification({ message: "Saved just now" });
     }, DEBOUNCE_TIME),
-    [documentId]
+    [documentId, showNotification]
   );
 
   const handleUpdate = useCallback(
