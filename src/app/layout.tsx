@@ -4,7 +4,10 @@ import "./globals.css";
 import "./prosemirror.css";
 import CommandMenu from "@/components/CommandMenu";
 import TipText from "@/components/TipText";
+
 import { NotificationProvider } from "@/components/NotificationProvider";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -26,9 +29,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${lato.variable} antialiased`}>
         <NotificationProvider>
-          <CommandMenu />
-          <TipText />
-          {children}
+          <SidebarProvider>
+            <AppSidebar />
+            <CommandMenu />
+            <TipText />
+            <main className="w-full h-full block">
+              <SidebarTrigger />
+              {children}
+            </main>
+          </SidebarProvider>
         </NotificationProvider>
       </body>
     </html>
