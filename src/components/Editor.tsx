@@ -14,16 +14,36 @@ const MIN_WORDS = 5;
 
 const Editor = () => {
   const { documentId, setDocumentId } = useEditorStore();
+  const [initialContent, setInitialContent] = useState<JSONContent | undefined>(
+    undefined
+  );
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadDocument = async () => {
+      if (documentId) {
+        const doc = await getDocument(documentId);
+
+        if (doc) {
+          setInitialContent(doc.content);
+          setIsLoaded(true);
+          return;
+        }
+      }
+
+      setIsLoaded(true);
+    };
+
+    loadDocument();
+  }, [documentId]);
 
   const debouncedSave = useCallback(
     debounce((json: JSONContent) => {
       if (!documentId) {
-        console.log("no document id");
         return;
       }
 
       saveDocument(documentId, json, Date.now());
-      console.log("saved document");
     }, 1000),
     [documentId]
   );
@@ -44,12 +64,17 @@ const Editor = () => {
     [documentId, setDocumentId, debouncedSave]
   );
 
+  if (!isLoaded) {
+    return <div className="h-full">Loading...</div>;
+  }
+
   return (
     <div className="h-full">
       <EditorRoot>
         <EditorContent
           className="h-full"
           extensions={extensions}
+          initialContent={initialContent}
           onUpdate={({ editor }) => {
             const json = editor.getJSON();
             const text = editor.getText();
