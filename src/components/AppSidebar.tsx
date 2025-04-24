@@ -14,8 +14,28 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { useDocumentTitles } from "@/hooks/useDocumentTitles";
 import { useEditorStore } from "@/store/useEditorStore";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import dynamic from "next/dynamic";
+import { deleteDocument } from "@/lib/db";
+import { useNotificationContext } from "./NotificationProvider";
+import { useState } from "react";
 
 const SidebarMenuSkeleton = dynamic(
   () =>
@@ -34,6 +54,72 @@ const NavProjectsSkeleton = () => {
         </SidebarMenuItem>
       ))}
     </SidebarMenu>
+  );
+};
+
+const DeleteDialog = ({
+  documentId,
+  open,
+  onOpenChange,
+}: {
+  documentId: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) => {
+  const { showNotification } = useNotificationContext();
+  const { clearDocumentId } = useEditorStore();
+
+  const handleDelete = async () => {
+    await deleteDocument(documentId);
+    clearDocumentId();
+
+    showNotification({ message: "Deleted successfully" });
+
+    onOpenChange(false);
+  };
+
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Remember, this action cannot be undone. We cannot recover your
+            writing once it is deleted.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+const MenuAction = ({ documentId }: { documentId: string }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <DeleteDialog
+        documentId={documentId}
+        open={open}
+        onOpenChange={setOpen}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuAction>
+            <MoreHorizontal />
+          </SidebarMenuAction>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };
 
@@ -57,9 +143,7 @@ const WritingList = () => {
           <SidebarMenuButton isActive={document.id === documentId}>
             {document.title}
           </SidebarMenuButton>
-          <SidebarMenuAction>
-            <MoreHorizontal />
-          </SidebarMenuAction>
+          <MenuAction documentId={document.id} />
         </SidebarMenuItem>
       ))}
     </SidebarMenu>

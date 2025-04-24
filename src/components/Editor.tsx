@@ -1,7 +1,7 @@
 "use client";
 
 import { EditorContent, EditorRoot, JSONContent } from "novel";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { defaultExtensions } from "@/lib/extensions";
 import { useEditorStore } from "@/store/useEditorStore";
 import { nanoid } from "nanoid";
@@ -23,9 +23,18 @@ const Editor = () => {
     undefined
   );
   const [isLoaded, setIsLoaded] = useState(false);
+  const isNewDocument = useRef(false);
 
   useEffect(() => {
     const loadDocument = async () => {
+      if (isNewDocument.current) {
+        setIsLoaded(true);
+
+        isNewDocument.current = false;
+
+        return;
+      }
+
       if (documentId) {
         const doc = await getDocument(documentId);
 
@@ -68,6 +77,7 @@ const Editor = () => {
 
       if (!documentId && wordCount > MIN_WORDS) {
         const newDocumentId = nanoid();
+        isNewDocument.current = true;
         setDocumentId(newDocumentId);
       }
 
