@@ -39,6 +39,7 @@ const Editor = () => {
       setIsLoaded(true);
     };
 
+    setIsLoaded(false);
     loadDocument();
   }, [documentId]);
 
