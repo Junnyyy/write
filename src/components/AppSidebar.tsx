@@ -40,6 +40,7 @@ const NavProjectsSkeleton = () => {
 const WritingList = () => {
   const documents = useDocumentTitles();
   const { documentId, setDocumentId } = useEditorStore();
+
   if (!documents) {
     return <NavProjectsSkeleton />;
   }
