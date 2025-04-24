@@ -39,7 +39,7 @@ const NavProjectsSkeleton = () => {
 
 const WritingList = () => {
   const documents = useDocumentTitles();
-  const { setDocumentId } = useEditorStore();
+  const { documentId, setDocumentId } = useEditorStore();
   if (!documents) {
     return <NavProjectsSkeleton />;
   }
@@ -50,11 +50,12 @@ const WritingList = () => {
         <SidebarMenuItem
           key={document.id}
           onClick={() => {
-            console.log("setting document id", document.id);
             setDocumentId(document.id);
           }}
         >
-          <SidebarMenuButton>{document.title}</SidebarMenuButton>
+          <SidebarMenuButton isActive={document.id === documentId}>
+            {document.title}
+          </SidebarMenuButton>
           <SidebarMenuAction>
             <MoreHorizontal />
           </SidebarMenuAction>
