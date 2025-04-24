@@ -17,7 +17,7 @@ const MIN_WORDS = 5;
 const DEBOUNCE_TIME = 1000;
 
 const Editor = () => {
-  const { documentId, setDocumentId, setLastSaved } = useEditorStore();
+  const { documentId, setDocumentId } = useEditorStore();
   const { showNotification } = useNotificationContext();
   const [initialContent, setInitialContent] = useState<JSONContent | undefined>(
     undefined
@@ -49,10 +49,9 @@ const Editor = () => {
       }
 
       saveDocument(documentId, title, json, Date.now());
-      setLastSaved(Date.now());
       showNotification({ message: "Saved just now" });
     }, DEBOUNCE_TIME),
-    [documentId, showNotification, setLastSaved]
+    [documentId, showNotification]
   );
 
   useEffect(() => {
