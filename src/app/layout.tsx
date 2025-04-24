@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Lato } from "next/font/google";
+
 import "./globals.css";
 import "./prosemirror.css";
+
 import CommandMenu from "@/components/CommandMenu";
 import TipText from "@/components/TipText";
-
 import { NotificationProvider } from "@/components/NotificationProvider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 
 const lato = Lato({
@@ -20,7 +26,7 @@ export const metadata: Metadata = {
   description: "A simple, beautiful, and powerful place to speak your mind.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -29,14 +35,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${lato.variable} antialiased`}>
         <NotificationProvider>
-          <SidebarProvider>
+          <SidebarProvider defaultOpen={false}>
             <AppSidebar />
             <CommandMenu />
+            <SidebarInset>
+              <main className="w-full h-full block">
+                <SidebarTrigger />
+                {children}
+              </main>
+            </SidebarInset>
             <TipText />
-            <main className="w-full h-full block">
-              <SidebarTrigger />
-              {children}
-            </main>
           </SidebarProvider>
         </NotificationProvider>
       </body>
