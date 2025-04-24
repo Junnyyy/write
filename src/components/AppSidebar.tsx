@@ -9,6 +9,7 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 import { MoreHorizontal } from "lucide-react";
@@ -134,13 +135,13 @@ const WritingList = () => {
   return (
     <SidebarMenu className="animate-in fade-in slide-in-from-bottom-4 duration-1000">
       {documents.map((document) => (
-        <SidebarMenuItem
-          key={document.id}
-          onClick={() => {
-            setDocumentId(document.id);
-          }}
-        >
-          <SidebarMenuButton isActive={document.id === documentId}>
+        <SidebarMenuItem key={document.id}>
+          <SidebarMenuButton
+            isActive={document.id === documentId}
+            onClick={() => {
+              setDocumentId(document.id);
+            }}
+          >
             {document.title}
           </SidebarMenuButton>
           <MenuAction documentId={document.id} />
@@ -158,6 +159,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>
             <h1>Writings</h1>
           </SidebarGroupLabel>
+          <SidebarSeparator />
           <WritingList />
         </SidebarGroup>
       </SidebarContent>
