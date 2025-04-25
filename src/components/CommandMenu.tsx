@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -19,17 +18,34 @@ const CommandMenu = () => {
   const [open, setOpen] = useState(false);
   const { metaKey } = useDevice();
 
-  useEffect(() => {
-    const down = (event: KeyboardEvent) => {
-      if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault();
-        setOpen((open) => !open);
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      switch (event.key) {
+        case "k":
+          if (event.metaKey || event.ctrlKey) {
+            event.preventDefault();
+            setOpen((prevOpen) => !prevOpen);
+          }
+          break;
+        case "?":
+          event.preventDefault();
+          setOpen((prevOpen) => !prevOpen);
+          break;
+        case "/":
+          event.preventDefault();
+          setOpen((prevOpen) => !prevOpen);
+          break;
+        default:
+          break;
       }
-    };
+    },
+    [setOpen]
+  );
 
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, []);
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
