@@ -2,7 +2,7 @@ use tauri::{App, TitleBarStyle, WebviewUrl, WebviewWindowBuilder};
 
 pub fn create_main_window(app: &mut App) -> tauri::Result<()> {
     let win_builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
-        .title("Write")
+        .hidden_title(true)
         .inner_size(1100.0, 700.0);
 
     #[cfg(target_os = "macos")]
