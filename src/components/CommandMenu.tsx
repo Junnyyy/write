@@ -9,10 +9,15 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "./ui/command";
+  CommandShortcut,
+} from "@/components/ui/command";
+
+import { useDevice } from "@/hooks/useDevice";
+import { Download, Heart, MessageCircle, Save, Trash } from "lucide-react";
 
 const CommandMenu = () => {
   const [open, setOpen] = useState(false);
+  const { metaKey } = useDevice();
 
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
@@ -31,10 +36,33 @@ const CommandMenu = () => {
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Suggestions">
-          <CommandItem>Save</CommandItem>
-          <CommandItem>Chat</CommandItem>
-          <CommandItem>Export</CommandItem>
+        <CommandGroup heading="Actions">
+          <CommandItem disabled>
+            <Save />
+            <span>Save</span>
+            <CommandShortcut>{metaKey}S</CommandShortcut>
+          </CommandItem>
+          <CommandItem disabled>
+            <MessageCircle />
+            <span>Chat</span>
+            <CommandShortcut>{metaKey}C</CommandShortcut>
+          </CommandItem>
+          <CommandItem disabled>
+            <Download />
+            <span>Export</span>
+          </CommandItem>
+          <CommandItem disabled>
+            <Trash />
+            <span>Delete</span>
+          </CommandItem>
+        </CommandGroup>
+        <CommandGroup heading="Other">
+          <CommandItem
+            onSelect={() => window.open("https://johnnyle.io", "_blank")}
+          >
+            <Heart />
+            <span>Visit Johnnyle.io</span>
+          </CommandItem>
         </CommandGroup>
       </CommandList>
     </CommandDialog>
