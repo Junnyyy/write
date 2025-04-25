@@ -10,12 +10,21 @@ import {
   CommandList,
   CommandShortcut,
 } from "@/components/ui/command";
+import { useSidebar } from "./ui/sidebar";
 
 import { useDevice } from "@/hooks/useDevice";
-import { Download, Heart, MessageCircle, Save, Trash } from "lucide-react";
+import {
+  Download,
+  Heart,
+  MessageCircle,
+  Save,
+  Sidebar,
+  Trash,
+} from "lucide-react";
 
 const CommandMenu = () => {
   const [open, setOpen] = useState(false);
+  const { toggleSidebar } = useSidebar();
   const { metaKey } = useDevice();
 
   const handleKeyDown = useCallback(
@@ -52,6 +61,24 @@ const CommandMenu = () => {
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Suggestions">
+          <CommandItem
+            onSelect={() => window.open("https://johnnyle.io", "_blank")}
+          >
+            <Heart />
+            <span>Visit Johnnyle.io</span>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => {
+              toggleSidebar();
+              setOpen(false);
+            }}
+          >
+            <Sidebar />
+            <span>Toggle Sidebar</span>
+            <CommandShortcut>{metaKey}B</CommandShortcut>
+          </CommandItem>
+        </CommandGroup>
         <CommandGroup heading="Actions">
           <CommandItem disabled>
             <Save />
@@ -70,14 +97,6 @@ const CommandMenu = () => {
           <CommandItem disabled>
             <Trash />
             <span>Delete</span>
-          </CommandItem>
-        </CommandGroup>
-        <CommandGroup heading="Other">
-          <CommandItem
-            onSelect={() => window.open("https://johnnyle.io", "_blank")}
-          >
-            <Heart />
-            <span>Visit Johnnyle.io</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>
