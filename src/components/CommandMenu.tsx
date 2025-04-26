@@ -21,11 +21,36 @@ import {
   Sidebar,
   Trash,
 } from "lucide-react";
+import { useEditorStore } from "@/store/useEditorStore";
+import { useNotificationContext } from "@/components/NotificationProvider";
 
 const CommandMenu = () => {
   const [open, setOpen] = useState(false);
   const { toggleSidebar } = useSidebar();
   const { metaKey } = useDevice();
+  const { saveCurrentDocument, documentId, jsonContent } = useEditorStore();
+  const { showNotification } = useNotificationContext();
+
+  const canSave = !!documentId && !!jsonContent;
+
+  const handleSave = useCallback(async () => {
+    const success = await saveCurrentDocument();
+
+    if (success) {
+      showNotification({ message: "Saved just now" });
+      setOpen(false);
+      return;
+    }
+
+    if (!documentId) {
+      showNotification({
+        message: "Unable to save, you need 5 words first.",
+      });
+      return;
+    }
+
+    showNotification({ message: "Unable to save" });
+  }, [saveCurrentDocument, showNotification, setOpen]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -43,6 +68,12 @@ const CommandMenu = () => {
         case "/":
           event.preventDefault();
           setOpen((prevOpen) => !prevOpen);
+          break;
+        case "s":
+          if (event.metaKey || event.ctrlKey) {
+            event.preventDefault();
+            handleSave();
+          }
           break;
         default:
           break;
@@ -80,7 +111,7 @@ const CommandMenu = () => {
           </CommandItem>
         </CommandGroup>
         <CommandGroup heading="Actions">
-          <CommandItem disabled>
+          <CommandItem onSelect={handleSave} disabled={!canSave}>
             <Save />
             <span>Save</span>
             <CommandShortcut>{metaKey}S</CommandShortcut>
