@@ -61,14 +61,6 @@ const CommandMenu = () => {
             setOpen((prevOpen) => !prevOpen);
           }
           break;
-        case "?":
-          event.preventDefault();
-          setOpen((prevOpen) => !prevOpen);
-          break;
-        case "/":
-          event.preventDefault();
-          setOpen((prevOpen) => !prevOpen);
-          break;
         case "s":
           if (event.metaKey || event.ctrlKey) {
             event.preventDefault();
