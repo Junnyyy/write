@@ -10,6 +10,7 @@ import { getDocument, saveDocument } from "@/lib/db";
 import { useNotificationContext } from "@/components/NotificationProvider";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { calculateTitle } from "@/lib/utils";
 
 const extensions = [...defaultExtensions];
 
@@ -17,7 +18,7 @@ const MIN_WORDS = 5;
 const DEBOUNCE_TIME = 1000;
 
 const Editor = () => {
-  const { documentId, setDocumentId } = useEditorStore();
+  const { documentId, setDocumentId, setEditorContent } = useEditorStore();
   const { showNotification } = useNotificationContext();
   const [initialContent, setInitialContent] = useState<JSONContent | undefined>(
     undefined
@@ -45,12 +46,18 @@ const Editor = () => {
         }
       }
 
+      if (!documentId) {
+        setEditorContent(null, null);
+        setIsLoaded(true);
+        return;
+      }
+
       setIsLoaded(true);
     };
 
     setIsLoaded(false);
     loadDocument();
-  }, [documentId]);
+  }, [documentId, setEditorContent]);
 
   const debouncedSave = useCallback(
     debounce((json: JSONContent, title: string) => {
@@ -74,24 +81,24 @@ const Editor = () => {
     (json: JSONContent, text: string) => {
       const words = text.split(" ").filter((word) => word.length > 0);
       const wordCount = words.length;
+      let currentDocumentId = documentId;
 
-      if (!documentId && wordCount > MIN_WORDS) {
+      if (!currentDocumentId && wordCount > MIN_WORDS) {
         const newDocumentId = nanoid();
         isNewDocument.current = true;
         setDocumentId(newDocumentId);
+        currentDocumentId = newDocumentId;
       }
 
-      if (documentId) {
-        if (wordCount < 1) {
-          debouncedSave(json, "Untitled");
-          return;
-        }
+      setEditorContent(json, text);
 
-        const title = words.slice(0, 5).join(" ");
+      if (currentDocumentId) {
+        const title = calculateTitle(text);
+
         debouncedSave(json, title);
       }
     },
-    [documentId, setDocumentId, debouncedSave]
+    [documentId, setDocumentId, debouncedSave, setEditorContent]
   );
 
   if (!isLoaded) {
