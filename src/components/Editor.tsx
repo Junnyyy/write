@@ -1,20 +1,20 @@
 "use client";
 
-import { EditorContent, EditorRoot, JSONContent } from "novel";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useNotificationContext } from "@/components/NotificationProvider";
+import { getDocument, saveDocument } from "@/lib/db";
 import { defaultExtensions } from "@/lib/extensions";
 import { useEditorStore } from "@/store/useEditorStore";
-import { nanoid } from "nanoid";
 import debounce from "lodash.debounce";
-import { getDocument, saveDocument } from "@/lib/db";
-import { useNotificationContext } from "@/components/NotificationProvider";
+import { nanoid } from "nanoid";
+import { EditorContent, EditorRoot, JSONContent } from "novel";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { calculateTitle } from "@/lib/utils";
 
 const extensions = [...defaultExtensions];
 
-const MIN_WORDS = 5;
+const MIN_WORDS = 4;
 const DEBOUNCE_TIME = 1000;
 
 const Editor = () => {
