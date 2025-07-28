@@ -18,12 +18,14 @@ const MIN_WORDS = 4;
 const DEBOUNCE_TIME = 1000;
 
 const Editor = () => {
-  const { documentId, setDocumentId, setEditorContent, isSaving, setSaving } = useEditorStore();
+  const { documentId, setDocumentId, setEditorContent, isSaving, setSaving } =
+    useEditorStore();
   const { showNotification } = useNotificationContext();
   const [initialContent, setInitialContent] = useState<JSONContent | undefined>(
     undefined
   );
   const [isLoaded, setIsLoaded] = useState(false);
+  const [editorKey, setEditorKey] = useState(0);
   const isNewDocument = useRef(false);
 
   useEffect(() => {
@@ -47,7 +49,9 @@ const Editor = () => {
       }
 
       if (!documentId) {
+        setInitialContent(undefined);
         setEditorContent(null, null);
+        setEditorKey((prev) => prev + 1);
         setIsLoaded(true);
         return;
       }
@@ -60,23 +64,26 @@ const Editor = () => {
   }, [documentId, setEditorContent]);
 
   const debouncedSave = useCallback(
-    debounce(async (json: JSONContent, title: string, currentDocumentId: string) => {
-      if (!currentDocumentId || isSaving) {
-        return;
-      }
+    debounce(
+      async (json: JSONContent, title: string, currentDocumentId: string) => {
+        if (!currentDocumentId || isSaving) {
+          return;
+        }
 
-      setSaving(true);
-      
-      try {
-        await saveDocument(currentDocumentId, title, json, Date.now());
-        showNotification({ message: "Saved just now" });
-      } catch (error) {
-        console.error("Failed to save document:", error);
-        showNotification({ message: "Failed to save" });
-      } finally {
-        setSaving(false);
-      }
-    }, DEBOUNCE_TIME),
+        setSaving(true);
+
+        try {
+          await saveDocument(currentDocumentId, title, json, Date.now());
+          showNotification({ message: "Saved just now" });
+        } catch (error) {
+          console.error("Failed to save document:", error);
+          showNotification({ message: "Failed to save" });
+        } finally {
+          setSaving(false);
+        }
+      },
+      DEBOUNCE_TIME
+    ),
     [isSaving, setSaving, showNotification]
   );
 
@@ -133,6 +140,7 @@ const Editor = () => {
     <div className="h-full">
       <EditorRoot>
         <EditorContent
+          key={editorKey}
           className="h-full"
           extensions={extensions}
           initialContent={initialContent}

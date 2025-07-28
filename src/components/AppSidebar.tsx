@@ -12,7 +12,7 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Plus } from "lucide-react";
 import { useDocumentTitles } from "@/hooks/useDocumentTitles";
 import { useEditorStore } from "@/store/useEditorStore";
 import {
@@ -31,6 +31,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 import dynamic from "next/dynamic";
 import { deleteDocument } from "@/lib/db";
@@ -123,6 +124,26 @@ const MenuAction = ({ documentId }: { documentId: string }) => {
   );
 };
 
+const NewWritingButton = () => {
+  const { clearDocumentId, setEditorContent } = useEditorStore();
+
+  const handleNewWriting = () => {
+    clearDocumentId();
+    setEditorContent(null, null);
+  };
+
+  return (
+    <Button
+      onClick={handleNewWriting}
+      size="sm"
+      className="w-full my-2 flex items-center gap-2"
+    >
+      <Plus size={16} />
+      New Writing
+    </Button>
+  );
+};
+
 const WritingList = () => {
   const documents = useDocumentTitles();
   const { documentId, setDocumentId } = useEditorStore();
@@ -158,7 +179,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>
             <h1>Writings</h1>
           </SidebarGroupLabel>
-          <SidebarSeparator />
+          <NewWritingButton />
           <WritingList />
         </SidebarGroup>
       </SidebarContent>
