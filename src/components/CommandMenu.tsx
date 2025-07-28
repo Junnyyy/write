@@ -44,7 +44,7 @@ const CommandMenu = () => {
 
     if (!documentId) {
       showNotification({
-        message: "Unable to save, you need 5 words first.",
+        message: "Unable to save, you need 4 words first.",
       });
       return;
     }
