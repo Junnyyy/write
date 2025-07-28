@@ -9,7 +9,6 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 import { MoreHorizontal, Plus } from "lucide-react";
@@ -68,11 +67,19 @@ const DeleteDialog = ({
   onOpenChange: (open: boolean) => void;
 }) => {
   const { showNotification } = useNotificationContext();
-  const { clearDocumentId } = useEditorStore();
+  const {
+    documentId: currentDocumentId,
+    clearDocumentId,
+    setEditorContent,
+  } = useEditorStore();
 
   const handleDelete = async () => {
     await deleteDocument(documentId);
-    clearDocumentId();
+
+    if (documentId === currentDocumentId) {
+      clearDocumentId();
+      setEditorContent(null, null);
+    }
 
     showNotification({ message: "Deleted successfully" });
 
