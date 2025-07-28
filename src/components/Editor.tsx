@@ -83,8 +83,11 @@ const Editor = () => {
   useEffect(() => {
     return () => {
       debouncedSave.cancel();
+      if (isSaving) {
+        setSaving(false);
+      }
     };
-  }, [debouncedSave]);
+  }, [debouncedSave, isSaving, setSaving]);
 
   const handleUpdate = useCallback(
     (json: JSONContent, text: string) => {
