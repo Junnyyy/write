@@ -3,6 +3,7 @@
 import { createContext, useContext, ReactNode } from "react";
 import { useNotification } from "@/hooks/useNotification";
 import NotificationText from "./NotificationText";
+import ChatButton from "./ChatButton";
 
 type NotificationContextType = {
   showNotification: (options: { message: string; duration?: number }) => void;
@@ -29,6 +30,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     <NotificationContext.Provider value={{ showNotification }}>
       {children}
       <NotificationText message={message} isVisible={isVisible} />
+      <ChatButton />
     </NotificationContext.Provider>
   );
 };

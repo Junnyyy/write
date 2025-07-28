@@ -10,7 +10,7 @@ import { EditorContent, EditorRoot, JSONContent } from "novel";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { calculateTitle } from "@/lib/utils";
+import { calculateTitle, extractTextFromJSON } from "@/lib/utils";
 
 const extensions = [...defaultExtensions];
 
@@ -43,6 +43,8 @@ const Editor = () => {
 
         if (doc) {
           setInitialContent(doc.content);
+          const textFromJSON = extractTextFromJSON(doc.content);
+          setEditorContent(doc.content, textFromJSON);
           setIsLoaded(true);
           return;
         }

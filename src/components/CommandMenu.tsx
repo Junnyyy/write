@@ -23,15 +23,17 @@ import {
 } from "lucide-react";
 import { useEditorStore } from "@/store/useEditorStore";
 import { useNotificationContext } from "@/components/NotificationProvider";
+import { generateChatGPTUrl, canShareWithChatGPT } from "@/lib/chatgpt";
 
 const CommandMenu = () => {
   const [open, setOpen] = useState(false);
   const { toggleSidebar } = useSidebar();
   const { metaKey } = useDevice();
-  const { saveCurrentDocument, documentId, jsonContent } = useEditorStore();
+  const { saveCurrentDocument, documentId, jsonContent, textContent } = useEditorStore();
   const { showNotification } = useNotificationContext();
 
   const canSave = !!documentId && !!jsonContent;
+  const canShareChat = canShareWithChatGPT(textContent);
 
   const handleSave = useCallback(async () => {
     const success = await saveCurrentDocument();
@@ -50,7 +52,22 @@ const CommandMenu = () => {
     }
 
     showNotification({ message: "Unable to save" });
-  }, [saveCurrentDocument, showNotification, setOpen]);
+  }, [saveCurrentDocument, showNotification, setOpen, documentId]);
+
+  const handleChatGPT = useCallback(() => {
+    if (!textContent) {
+      showNotification({ message: "No content to share with ChatGPT" });
+      return;
+    }
+
+    try {
+      const chatGPTUrl = generateChatGPTUrl(textContent);
+      window.open(chatGPTUrl, "_blank");
+      setOpen(false);
+    } catch {
+      showNotification({ message: "Failed to generate ChatGPT link" });
+    }
+  }, [textContent, showNotification, setOpen]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -71,7 +88,7 @@ const CommandMenu = () => {
           break;
       }
     },
-    [setOpen]
+    [setOpen, handleSave]
   );
 
   useEffect(() => {
@@ -108,10 +125,9 @@ const CommandMenu = () => {
             <span>Save</span>
             <CommandShortcut>{metaKey}S</CommandShortcut>
           </CommandItem>
-          <CommandItem disabled>
+          <CommandItem onSelect={handleChatGPT} disabled={!canShareChat}>
             <MessageCircle />
-            <span>Chat</span>
-            <CommandShortcut>{metaKey}C</CommandShortcut>
+            <span>Chat with ChatGPT</span>
           </CommandItem>
           <CommandItem disabled>
             <Download />
