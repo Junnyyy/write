@@ -66,3 +66,7 @@ pnpm tauri:build
 - `src/lib/` - Utilities and database functions
 - `src/store/` - Zustand state management
 - `src-tauri/` - Tauri desktop app configuration
+
+## Credits
+
+ChatGPT integration inspired by [Farza's freewrite](https://github.com/farzaa/freewrite) - [freewrite.io](https://freewrite.io/)
