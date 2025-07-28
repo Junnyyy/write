@@ -18,7 +18,7 @@ const MIN_WORDS = 4;
 const DEBOUNCE_TIME = 1000;
 
 const Editor = () => {
-  const { documentId, setDocumentId, setEditorContent } = useEditorStore();
+  const { documentId, setDocumentId, setEditorContent, isSaving, setSaving } = useEditorStore();
   const { showNotification } = useNotificationContext();
   const [initialContent, setInitialContent] = useState<JSONContent | undefined>(
     undefined
@@ -60,22 +60,34 @@ const Editor = () => {
   }, [documentId, setEditorContent]);
 
   const debouncedSave = useCallback(
-    debounce((json: JSONContent, title: string) => {
-      if (!documentId) {
+    debounce(async (json: JSONContent, title: string, currentDocumentId: string) => {
+      if (!currentDocumentId || isSaving) {
         return;
       }
 
-      saveDocument(documentId, title, json, Date.now());
-      showNotification({ message: "Saved just now" });
+      setSaving(true);
+      
+      try {
+        await saveDocument(currentDocumentId, title, json, Date.now());
+        showNotification({ message: "Saved just now" });
+      } catch (error) {
+        console.error("Failed to save document:", error);
+        showNotification({ message: "Failed to save" });
+      } finally {
+        setSaving(false);
+      }
     }, DEBOUNCE_TIME),
-    [documentId, showNotification]
+    [isSaving, setSaving, showNotification]
   );
 
   useEffect(() => {
     return () => {
       debouncedSave.cancel();
+      if (isSaving) {
+        setSaving(false);
+      }
     };
-  }, [debouncedSave]);
+  }, [debouncedSave, isSaving, setSaving]);
 
   const handleUpdate = useCallback(
     (json: JSONContent, text: string) => {
@@ -95,7 +107,7 @@ const Editor = () => {
       if (currentDocumentId) {
         const title = calculateTitle(text);
 
-        debouncedSave(json, title);
+        debouncedSave(json, title, currentDocumentId);
       }
     },
     [documentId, setDocumentId, debouncedSave, setEditorContent]
