@@ -49,7 +49,7 @@ const useEditorStore = create<EditorStore>((set, get) => ({
       await saveDocument(documentId, title, jsonContent, Date.now());
       set({ isSaving: false });
       return true;
-    } catch (error) {
+    } catch {
       set({ isSaving: false });
       return false;
     }
