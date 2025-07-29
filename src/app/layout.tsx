@@ -13,6 +13,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { DbInitializer } from "@/components/DbInitializer";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -33,6 +34,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${lato.variable} antialiased`}>
+        <DbInitializer />
         <NotificationProvider>
           <SidebarProvider defaultOpen={false}>
             <AppSidebar />
