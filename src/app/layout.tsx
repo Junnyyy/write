@@ -41,7 +41,9 @@ export default async function RootLayout({
             <CommandMenu />
             <SidebarInset>
               <main className="w-full h-full block">
-                <SidebarTrigger />
+                <div className="p-2">
+                  <SidebarTrigger />
+                </div>
                 {children}
               </main>
             </SidebarInset>

@@ -27,7 +27,7 @@ const ChatButton = () => {
     <button
       onClick={handleChatGPT}
       disabled={!canShareChat}
-      className={`fixed bottom-4 right-4 text-sm text-muted-foreground transition-opacity ${
+      className={`fixed bottom-8 right-8 text-sm text-muted-foreground transition-opacity ${
         canShareChat 
           ? "opacity-100 hover:text-foreground cursor-pointer" 
           : "opacity-50 cursor-not-allowed"
